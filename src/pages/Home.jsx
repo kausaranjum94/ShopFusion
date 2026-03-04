@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { ProductCard } from "../component/ProductCard";
 import { ShimmerCard } from "../component/shimmer/ShimmerCard";
 import { ShimmerGrid } from "../component/shimmer/ShimmerGrid";
@@ -63,17 +63,41 @@ export const Home = () => {
     }
   };
 
-  const filteredProducts = name
-    ? products.filter((product) => product.category === name)
-    : products;
+  // const filteredProducts = name
+  //   ? products.filter((product) => product.category === name)
+  //   : products;
 
-  const sortedproducts = [...filteredProducts].sort((a, b) => {
-    if (sortOption === "price-asc") return a.price - b.price;
-    if (sortOption === "price-desc") return b.price - a.price;
-    if (sortOption === "name-asc") return a.title.localeCompare(b.title);
-    if (sortOption === "rating") return b.rating.rate - a.rating.rate;
-    return 0;
-  });
+  // const sortedproducts = [...filteredProducts].sort((a, b) => {
+  //   if (sortOption === "price-asc") return a.price - b.price;
+  //   if (sortOption === "price-desc") return b.price - a.price;
+  //   if (sortOption === "name-asc") return a.title.localeCompare(b.title);
+  //   if (sortOption === "rating") return b.rating.rate - a.rating.rate;
+  //   return 0;
+  // });
+
+  const finalProducts = useMemo(() => {
+    let updated = name
+      ? products.filter((product) => product.category === name)
+      : products;
+
+    if (sortOption === "price-asc") {
+      updated = [...updated].sort((a, b) => a.price - b.price);
+    }
+
+    if (sortOption === "price-desc") {
+      updated = [...updated].sort((a, b) => b.price - a.price);
+    }
+
+    if (sortOption === "name-asc") {
+      updated = [...updated].sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    if (sortOption === "rating") {
+      updated = [...updated].sort((a, b) => a.rating.rate - b.rating.rate);
+    }
+
+    return updated;
+  }, [products, name, sortOption]);
 
   if (!products || products.length === 0) {
     return <ShimmerGrid />;
@@ -106,7 +130,7 @@ export const Home = () => {
           </div>
 
           <select
-            valur={sortOption}
+            value={sortOption}
             onChange={(e) => setsortOption(e.target.value)}
             className="border p-2 rounded"
           >
@@ -117,8 +141,9 @@ export const Home = () => {
             <option value="rating">Rating</option>
           </select>
         </div>
+
         <div className="grid grid-cols-4 gap-4">
-          {sortedproducts.map((product) => (
+          {finalProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -129,7 +154,7 @@ export const Home = () => {
         </div>
 
         {/* <div className="grid grid-cols-4 gap-4">
-          {filteredProducts.map((product) => (
+          {sortedproducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -146,18 +171,6 @@ export const Home = () => {
             </p>
           </div>
         )}
-        {/* <div className="grid grid-cols-4 gap-4">
-          {products.map((product) => {
-            return (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddWishlist={addToWishlist}
-                wishlist={wishlist}
-              />
-            );
-          })}
-        </div> */}
       </div>
     </>
   );
