@@ -9,6 +9,7 @@ export const Home = () => {
   const [wishlist, setWishlist] = useState([]);
   const [wishlistMessage, setwishlistMessage] = useState("");
   const [categories, setCategories] = useState([]);
+  const [sortOption, setsortOption] = useState([]);
 
   const PRODUCTS_API = import.meta.env.VITE_PRODUCTS_API;
 
@@ -66,36 +67,58 @@ export const Home = () => {
     ? products.filter((product) => product.category === name)
     : products;
 
+  const sortedproducts = [...filteredProducts].sort((a, b) => {
+    if (sortOption === "price-asc") return a.price - b.price;
+    if (sortOption === "price-desc") return b.price - a.price;
+    if (sortOption === "name-asc") return a.title.localeCompare(b.title);
+    if (sortOption === "rating") return b.rating.rate - a.rating.rate;
+    return 0;
+  });
+
   if (!products || products.length === 0) {
     return <ShimmerGrid />;
   }
   return (
     <>
       <div className="container mx-auto px-4 my-5">
-        <div className="flex flex-wrap gap-3 my-6 justify-center">
-          <button
-            onClick={() => navigate("/")}
-            className={`px-4 py-2 rounded-md ${
-              name === "all" ? "bg-black text-white" : "bg-gray-200"
-            }`}
-          >
-            All
-          </button>
-
-          {categories.map((category) => (
+        <div className="flex justify-between my-6">
+          <div className="flex flex-wrap gap-3  justify-center">
             <button
-              key={category}
-              onClick={() => navigate(`/category/${category}`)}
-              className={`px-4 py-2 rounded-md capitalize ${
-                name === category ? "bg-black text-white" : "bg-gray-200"
+              onClick={() => navigate("/")}
+              className={`px-4 py-2 rounded-md ${
+                name === "all" ? "bg-black text-white" : "bg-gray-200"
               }`}
             >
-              {category}
+              All
             </button>
-          ))}
+
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => navigate(`/category/${category}`)}
+                className={`px-4 py-2 rounded-md capitalize ${
+                  name === category ? "bg-black text-white" : "bg-gray-200"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          <select
+            valur={sortOption}
+            onChange={(e) => setsortOption(e.target.value)}
+            className="border p-2 rounded"
+          >
+            <option value="">Default</option>
+            <option value="price-asc">Price - Low to High</option>
+            <option value="price-desc">Price - High to Low</option>
+            <option value="name-asc">Name A - Z</option>
+            <option value="rating">Rating</option>
+          </select>
         </div>
         <div className="grid grid-cols-4 gap-4">
-          {filteredProducts.map((product) => (
+          {sortedproducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -104,6 +127,17 @@ export const Home = () => {
             />
           ))}
         </div>
+
+        {/* <div className="grid grid-cols-4 gap-4">
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAddWishlist={addToWishlist}
+              wishlist={wishlist}
+            />
+          ))}
+        </div> */}
 
         {wishlistMessage && (
           <div className="wishlistMessage fixed left-0 right-0 flex align-middle justify-center top-50 z-10">
