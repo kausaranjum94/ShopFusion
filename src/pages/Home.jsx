@@ -31,7 +31,7 @@ export const Home = () => {
     error: categoryError,
   } = useFetchCategories(PRODUCTS_API);
 
-  console.log("Products", products);
+  //console.log("Products", products);
 
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
