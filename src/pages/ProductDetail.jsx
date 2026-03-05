@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "../context/cartContext";
 import { FaStar } from "react-icons/fa";
-import { ShimmerProductDetails } from "../component/shimmer/Shimmerproductdetails";
+import { ShimmerProductDetails } from "../component/shimmer/ShimmerProductDetails";
 
 export const ProductDetail = () => {
   const { addToCart, cartMessage, updateQuantity, cart } = useCart();
