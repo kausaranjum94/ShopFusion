@@ -7,12 +7,9 @@ export const SearchPage = () => {
   const [filteredProducts, setfilteredProducts] = useState([]);
   const [searchMessage, setSearchMessage] = useState("");
   const location = useLocation();
-  //console.log("location", location);
   const queryParams = new URLSearchParams(location.search);
 
-  //console.log("queryParams", queryParams);
   const query = queryParams.get("q");
-  //console.log("q", query);
 
   const PRODUCTS_API = import.meta.env.VITE_PRODUCTS_API;
 
@@ -47,8 +44,6 @@ export const SearchPage = () => {
       setfilteredProducts(products);
     }
   }, [query, products]);
-
-  //console.log("filteredProducts", filteredProducts);
 
   return (
     <div className="container mx-auto px-4 my-5">

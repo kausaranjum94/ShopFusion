@@ -22,7 +22,7 @@ export const Cart = () => {
             <p>{item.title}</p>
           </div>
           <div className="col-span-3 text-center">
-            <p className="font-bold">{item.price}</p>
+            <p className="font-bold">${item.price}</p>
           </div>
           <div className="col-span-3 flex align-middle justify-center">
             <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>
@@ -49,7 +49,7 @@ export const Cart = () => {
         <button onClick={() => clearCart()}>Clear Cart</button>
         <span className="font-bold text-black">
           {" "}
-          {`Total: ${TotalPrice.toFixed(2)}`}{" "}
+          ${`Total: ${TotalPrice.toFixed(2)}`}{" "}
         </span>
       </div>
     </div>

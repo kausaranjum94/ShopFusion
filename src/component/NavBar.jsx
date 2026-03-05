@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/cartContext";
 import { BsSearch } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const NavBar = () => {
   const { cart } = useCart();
@@ -12,16 +12,26 @@ export const NavBar = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    console.log(search);
-    navigate(`/search?q=${search}`);
-  };
+  const location = useLocation();
+  console.log(location);
+
+  useEffect(() => {
+    const trimmedSearchTitle = search.trim();
+
+    const timer = setTimeout(() => {
+      if (trimmedSearchTitle.length > 0) {
+        navigate(`search?q=${trimmedSearchTitle}`);
+      } else if (location.pathname === "/search") {
+        navigate("/");
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search, navigate]);
 
   return (
     <div className="navSearchWrap flex align-middle justify-end">
       <div className="navSearchWrap">
-        <form onSubmit={handleSearch} className="w-sm flex align-middle me-3">
+        <form className="w-sm flex align-middle me-3">
           <input
             type="text"
             value={search}
@@ -30,9 +40,6 @@ export const NavBar = () => {
             className=" bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full p-3 shadow-xs rounded-md"
             required
           />
-          <button type="submit" className="ms-2 !bg-blue-500 !text-white">
-            Search
-          </button>
         </form>
       </div>
       <nav className="flex items-center">

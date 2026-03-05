@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { ProductCard } from "../component/ProductCard";
-import { ShimmerCard } from "../component/shimmer/ShimmerCard";
 import { ShimmerGrid } from "../component/shimmer/ShimmerGrid";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 export const Home = () => {
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [wishlistMessage, setwishlistMessage] = useState("");
   const [categories, setCategories] = useState([]);
-  const [sortOption, setsortOption] = useState([]);
+  const [error, setError] = useState("");
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const sortOption = queryParams.get("sort");
 
   const PRODUCTS_API = import.meta.env.VITE_PRODUCTS_API;
 
@@ -21,10 +24,10 @@ export const Home = () => {
       const response = await fetch(PRODUCTS_API);
       if (!response.ok) throw new Error("Faild to Featch");
       const data = await response.json();
-      console.log(data);
+      //console.log(data);
       setProducts(data);
     } catch (error) {
-      console.error("Error Fetching Products: ", error);
+      setError(error.message);
     }
   };
 
@@ -34,9 +37,8 @@ export const Home = () => {
       if (!response.ok) throw new Error("Failed to fetch products");
       const data = await response.json();
       setCategories(data);
-      console.log("Categoies", data);
     } catch (error) {
-      console.log("Error fetching categories", error);
+      setError(error.message);
     }
   };
 
@@ -53,7 +55,6 @@ export const Home = () => {
     console.log("Product to be added to wishlist", product);
     if (!wishlist.find((item) => item.id === product.id)) {
       setWishlist([...wishlist, product]);
-      console.log(wishlist);
       setwishlistMessage(`${product.title} Item is added to wishlist`);
       setTimeout(() => {
         setwishlistMessage("");
@@ -62,18 +63,6 @@ export const Home = () => {
       console.log("Item is already in wishlist");
     }
   };
-
-  // const filteredProducts = name
-  //   ? products.filter((product) => product.category === name)
-  //   : products;
-
-  // const sortedproducts = [...filteredProducts].sort((a, b) => {
-  //   if (sortOption === "price-asc") return a.price - b.price;
-  //   if (sortOption === "price-desc") return b.price - a.price;
-  //   if (sortOption === "name-asc") return a.title.localeCompare(b.title);
-  //   if (sortOption === "rating") return b.rating.rate - a.rating.rate;
-  //   return 0;
-  // });
 
   const finalProducts = useMemo(() => {
     let updated = name
@@ -84,6 +73,7 @@ export const Home = () => {
       updated = [...updated].sort((a, b) => a.price - b.price);
     }
 
+    // For Sorting
     if (sortOption === "price-desc") {
       updated = [...updated].sort((a, b) => b.price - a.price);
     }
@@ -130,8 +120,12 @@ export const Home = () => {
           </div>
 
           <select
-            value={sortOption}
-            onChange={(e) => setsortOption(e.target.value)}
+            value={sortOption || ""}
+            // onChange={(e) => setsortOption(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              navigate(`${location.pathname}?sort=${value}`);
+            }}
             className="border p-2 rounded"
           >
             <option value="">Default</option>
@@ -152,17 +146,6 @@ export const Home = () => {
             />
           ))}
         </div>
-
-        {/* <div className="grid grid-cols-4 gap-4">
-          {sortedproducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddWishlist={addToWishlist}
-              wishlist={wishlist}
-            />
-          ))}
-        </div> */}
 
         {wishlistMessage && (
           <div className="wishlistMessage fixed left-0 right-0 flex align-middle justify-center top-50 z-10">
