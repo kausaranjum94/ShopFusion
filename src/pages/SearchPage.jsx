@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { ProductCard } from "../component/ProductCard";
+import { useFetchProducts } from "../hooks/useFetchProducts";
 
 export const SearchPage = () => {
-  const [products, setProducts] = useState([]);
   const [filteredProducts, setfilteredProducts] = useState([]);
   const [searchMessage, setSearchMessage] = useState("");
   const location = useLocation();
@@ -13,20 +13,7 @@ export const SearchPage = () => {
 
   const PRODUCTS_API = import.meta.env.VITE_PRODUCTS_API;
 
-  useEffect(() => {
-    const featchProducts = async () => {
-      try {
-        const response = await fetch(`${PRODUCTS_API}`);
-        if (!response.ok) throw new Error("Faild to fetch products");
-        const data = await response.json();
-        setProducts(data);
-        //console.log("Searched Data", data);
-      } catch (error) {
-        console.log("Error fetching products");
-      }
-    };
-    featchProducts();
-  }, []);
+  const { products, error: productError } = useFetchProducts(PRODUCTS_API);
 
   useEffect(() => {
     if (query) {

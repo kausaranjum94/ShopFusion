@@ -19,7 +19,7 @@ export const ProductDetail = () => {
         const response = await fetch(`${PRODUCTS_API}/${id}`);
         if (!response.ok) throw new Error("Faild to fetch product details");
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         setProductDetails(data);
       } catch (error) {
         console.log("Error Fecthing product details", error);

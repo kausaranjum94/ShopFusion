@@ -13,7 +13,7 @@ export const NavBar = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  console.log(location);
+  //console.log(location);
 
   useEffect(() => {
     const trimmedSearchTitle = search.trim();

@@ -2,59 +2,48 @@ import React, { useEffect, useState, useMemo } from "react";
 import { ProductCard } from "../component/ProductCard";
 import { ShimmerGrid } from "../component/shimmer/ShimmerGrid";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useFetchProducts } from "../hooks/useFetchProducts";
+import { useFetchCategories } from "../hooks/useFetchCategories";
+import { useSearchParams } from "react-router-dom";
+
+const PRODUCTS_API = import.meta.env.VITE_PRODUCTS_API;
 
 export const Home = () => {
-  const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [wishlistMessage, setwishlistMessage] = useState("");
-  const [categories, setCategories] = useState([]);
-  const [error, setError] = useState("");
-
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const sortOption = queryParams.get("sort");
-
-  const PRODUCTS_API = import.meta.env.VITE_PRODUCTS_API;
 
   const { name } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch(PRODUCTS_API);
-      if (!response.ok) throw new Error("Faild to Featch");
-      const data = await response.json();
-      //console.log(data);
-      setProducts(data);
-    } catch (error) {
-      setError(error.message);
-    }
-  };
+  const [searchParams] = useSearchParams();
+  const sortOption = searchParams.get("sort");
 
-  const fetechcategories = async () => {
-    try {
-      const response = await fetch(`${PRODUCTS_API}/categories`);
-      if (!response.ok) throw new Error("Failed to fetch products");
-      const data = await response.json();
-      setCategories(data);
-    } catch (error) {
-      setError(error.message);
-    }
-  };
+  const {
+    products,
+    loading: productLoading,
+    error: productError,
+  } = useFetchProducts(PRODUCTS_API);
+
+  const {
+    categories,
+    loading: categoryLoading,
+    error: categoryError,
+  } = useFetchCategories(PRODUCTS_API);
+
+  console.log("Products", products);
 
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
 
-  useEffect(() => {
-    fetchProducts();
-    fetechcategories();
-  }, []);
-
   const addToWishlist = (product) => {
     console.log("Product to be added to wishlist", product);
     if (!wishlist.find((item) => item.id === product.id)) {
-      setWishlist([...wishlist, product]);
+      setWishlist((prev) => {
+        if (prev.find((item) => item.id === product.id)) return prev;
+        return [...prev, product];
+      });
       setwishlistMessage(`${product.title} Item is added to wishlist`);
       setTimeout(() => {
         setwishlistMessage("");
@@ -70,28 +59,29 @@ export const Home = () => {
       : products;
 
     if (sortOption === "price-asc") {
-      updated = [...updated].sort((a, b) => a.price - b.price);
+      return [...updated].sort((a, b) => a.price - b.price);
     }
 
     // For Sorting
     if (sortOption === "price-desc") {
-      updated = [...updated].sort((a, b) => b.price - a.price);
+      return [...updated].sort((a, b) => b.price - a.price);
     }
 
     if (sortOption === "name-asc") {
-      updated = [...updated].sort((a, b) => a.title.localeCompare(b.title));
+      return [...updated].sort((a, b) => a.title.localeCompare(b.title));
     }
 
     if (sortOption === "rating") {
-      updated = [...updated].sort((a, b) => a.rating.rate - b.rating.rate);
+      return [...updated].sort((a, b) => a.rating.rate - b.rating.rate);
     }
 
     return updated;
   }, [products, name, sortOption]);
 
-  if (!products || products.length === 0) {
-    return <ShimmerGrid />;
-  }
+  if (productError) return <p>Error: {productError}</p>;
+  if (categoryError) return <p>Error: {categoryError}</p>;
+
+  if (productLoading || categoryLoading) return <ShimmerGrid />;
   return (
     <>
       <div className="container mx-auto px-4 my-5">
@@ -100,7 +90,7 @@ export const Home = () => {
             <button
               onClick={() => navigate("/")}
               className={`px-4 py-2 rounded-md ${
-                name === "all" ? "bg-black text-white" : "bg-gray-200"
+                !name ? "bg-black text-white" : "bg-gray-200"
               }`}
             >
               All

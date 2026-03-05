@@ -3,7 +3,6 @@ import { ProductCard } from "./ProductCard";
 
 export const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const storedWishlist = localStorage.getItem("wishlist");
