@@ -39,6 +39,10 @@ export const Home = () => {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
 
+  useEffect(()=>{
+    setCurrentPage(1);
+  }, [name, sortOption])
+
   const addToWishlist = (product) => {
     console.log("Product to be added to wishlist", product);
     if (!wishlist.find((item) => item.id === product.id)) {
