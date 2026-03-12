@@ -1,16 +1,137 @@
-# React + Vite
+# ShopFusion 🛒
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern **React-based eCommerce web application** that allows users to browse products, filter by category, search products, and manage a wishlist.  
+The project focuses on **clean UI, reusable components, custom hooks, and URL-based filtering/sorting**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Live Demo
 
-## React Compiler
+```
+https://shopfusionapp.netlify.app/
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 📌 Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 🛍 Browse products
+- 📂 Filter products by category
+- 🔎 Search products
+- ↕️ Sort products (Price, Name, Rating)
+- ❤️ Add items to wishlist
+- ⚡ Shimmer loading effect
+- 🔗 URL-based sorting and filtering
+- 🧠 Custom React hooks for API calls
+- 💾 Wishlist stored in localStorage
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- React
+- React Router
+- Tailwind CSS
+- JavaScript (ES6)
+
+### API
+
+- Fake Store API
+
+---
+
+## 📂 Project Structure
+
+```
+src
+ ┣ component
+ ┃ ┣ ProductCard.jsx
+ ┃ ┗ shimmer
+ ┃   ┗ ShimmerGrid.jsx
+ ┣ hooks
+ ┃ ┣ useFetchProducts.jsx
+ ┃ ┗ useFetchCategories.jsx
+ ┣ pages
+ ┃ ┣ Home.jsx
+ ┃ ┣ Cart.jsx
+ ┃ ┣ Wishlist.jsx
+ ┃ ┗ Search.jsx
+ ┣ App.jsx
+ ┗ main.jsx
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone the repository
+
+```
+git clone https://github.com/kausaranjum94/ShopFusion.git
+```
+
+### 2️⃣ Go to project folder
+
+```
+cd shopfusion
+```
+
+### 3️⃣ Install dependencies
+
+```
+npm install
+```
+
+### 4️⃣ Start development server
+
+```
+npm run dev
+```
+
+---
+
+## 🌐 Environment Variables
+
+Create a `.env` file in the root folder and add:
+
+```
+VITE_PRODUCTS_API=https://fakestoreapi.com/products
+```
+
+---
+
+## 🧠 Key Learning Concepts
+
+This project demonstrates:
+
+- Custom React Hooks
+- URL query parameters for sorting
+- Component reusability
+- State management using React Hooks
+- Performance optimization using `useMemo`
+- API loading states and error handling
+- LocalStorage for persistent wishlist
+
+---
+
+## 📈 Future Improvements
+
+- Add authentication
+
+---
+
+## 👨‍💻 Author
+
+**Kausar Anjum**
+
+GitHub:
+
+```
+https://github.com/kausaranjum94/
+```
+
+---
+
+⭐ If you like this project, feel free to **star the repository**.

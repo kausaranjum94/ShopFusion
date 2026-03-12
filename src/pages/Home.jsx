@@ -11,6 +11,8 @@ const PRODUCTS_API = import.meta.env.VITE_PRODUCTS_API;
 export const Home = () => {
   const [wishlist, setWishlist] = useState([]);
   const [wishlistMessage, setwishlistMessage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const productPerPage = 8;
 
   const { name } = useParams();
   const navigate = useNavigate();
@@ -78,6 +80,15 @@ export const Home = () => {
     return updated;
   }, [products, name, sortOption]);
 
+  const indexOfLastProducts = currentPage * productPerPage;
+  const indexOfFirtProducts = indexOfLastProducts - productPerPage;
+
+  const currentProducts = finalProducts.slice(indexOfFirtProducts, indexOfLastProducts);
+
+  const totalPages = Math.ceil(finalProducts.length / productPerPage);
+
+  console.log("Current Page", currentPage);
+
   if (productError) return <p>Error: {productError}</p>;
   if (categoryError) return <p>Error: {categoryError}</p>;
 
@@ -127,7 +138,7 @@ export const Home = () => {
         </div>
 
         <div className="grid grid-cols-4 gap-4">
-          {finalProducts.map((product) => (
+          {currentProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -137,6 +148,22 @@ export const Home = () => {
           ))}
         </div>
 
+        {
+          totalPages <= productPerPage && (
+            <>
+            <div className ="pagination text-center my-5">
+              <button disabled={currentPage === 1} onClick={()=> setCurrentPage(prev => prev - 1)} className="px-4 py-2 bg-blue-500 rounded disabled:opacity-50 text-white">Previous</button>
+
+              <span className="px-4 py-2">
+                Page {currentPage} of {totalPages}
+              </span>
+              
+              <button disabled={currentPage === totalPages} onClick={()=> setCurrentPage(prev => prev + 1)} className="px-4 py-2 bg-blue-500 rounded disabled:opacity-50 text-white">Next</button>
+            </div>
+            </>
+          )
+        }
+       
         {wishlistMessage && (
           <div className="wishlistMessage fixed left-0 right-0 flex align-middle justify-center top-50 z-10">
             <p className="bg-black text-white py-5 px-8 rounded-md ">
